@@ -3,13 +3,12 @@ node {
         checkout scm
     }
 
-    stage('Install Node.js') {
-        sh '''
-            apt-get update
-            apt-get install -y nodejs npm
-            node --version
-            npm --version
-        '''
+    stage('Setup Node.js') {
+        def nodeHome = tool name: 'node-lts', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
+        env.PATH = "${nodeHome}/bin:${env.PATH}"
+
+        sh 'node --version'
+        sh 'npm --version'
     }
 
     stage('Install Dependencies') {
@@ -24,3 +23,4 @@ node {
         sh 'npm test -- --watchAll=false'
     }
 }
+``
